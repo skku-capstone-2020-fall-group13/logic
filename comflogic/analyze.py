@@ -1,5 +1,4 @@
 import numpy as np
-from PIL import Image
 
 def analyze(category_arr):  
   arr_height, arr_width = category_arr.shape[:2]
