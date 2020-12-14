@@ -10,8 +10,8 @@ from PIL import Image
 
 
 '''
-Å×½ºÆ®¸¦ À§ÇØ¼­ µå¶óÀÌºê¿¡¼­ ÀÌ¹ÌÁö¸¦ ¹Þ¾Æ¿È
-½ÇÁ¦ ¾îÇÃ¸®ÄÉÀÌ¼Ç¿¡¼± segmentationµÈ ÀÌ¹ÌÁö¸¦ ¹Þ¾Æ¿Ã°Í
+í…ŒìŠ¤íŠ¸ë¥¼ ìœ„í•´ì„œ ë“œë¼ì´ë¸Œì—ì„œ ì´ë¯¸ì§€ë¥¼ ë°›ì•„ì˜´
+ì‹¤ì œ ì–´í”Œë¦¬ì¼€ì´ì…˜ì—ì„  segmentationëœ ì´ë¯¸ì§€ë¥¼ ë°›ì•„ì˜¬ê²ƒ
 '''
 
 def logic(image):
@@ -21,10 +21,14 @@ def logic(image):
   cat_im = image
   
   h,w = cat_im.shape[:2]
-  obj = []
+  obj = {}
+  obj['standard'] = []
+  obj['ratio'] = []
+  obj['score'] = []
   hcount = 0
   acount = 0
-  Color_class = ["µµ·Î", "ÁÖÅÃ", "¾ÆÆÄÆ®", "°øÀå", "°­", "ÁÖÅÃ", "³ìÁö", "´ëÇü°Ç¹°", "¹ÌºÐ·ù"]
+  field = 0.0
+  Color_class = ["ë„ë¡œ", "ì£¼íƒ", "ì•„íŒŒíŠ¸", "ê³µìž¥", "ê°•", "ì£¼íƒ", "ë…¹ì§€", "ëŒ€í˜•ê±´ë¬¼", "ë¯¸ë¶„ë¥˜"]
 
 
 
@@ -34,7 +38,7 @@ def logic(image):
     counts[ind] = 0
 
 
-#100~900»çÀÌÀÇ °ªÀº Áß¾Ó ±× ¿Ü´Â ¿Ü°ûÀ¸·Î ÆÇÁ¤
+#100~900ì‚¬ì´ì˜ ê°’ì€ ì¤‘ì•™ ê·¸ ì™¸ëŠ” ì™¸ê³½ìœ¼ë¡œ íŒì •
   for height in range(h):
     for width in range(w):
       if height >= 100 and height <= 900 and width >= 100 and width <= 900:
@@ -55,33 +59,35 @@ def logic(image):
   for index, colour in enumerate(colours):
     count = counts[index]
     
-    proportion = (100 * count) / (sum(counts)) #¿Ü°û ÇÈ¼¿ 0.7 ¹Ý¿µ
+    proportion = (100 * count) / (sum(counts)) #ì™¸ê³½ í”½ì…€ 0.7 ë°˜ì˜
     ci = int(colour)
 
-    obj.append({"Object" : Color_class[ci] , "Proportion" : proportion})
+    obj['ratio'].append({"Object" : Color_class[ci] , "Proportion" : proportion})
     
     
-    if(colour == 6): #³ìÁö
+    if(colour == 6): #ë…¹ì§€
       env_plus_ret += proportion
       syn += 1
-    elif(colour == 3): #°øÀå
+    elif(colour == 3): #ê³µìž¥
       env_minus_ret -= proportion * 1.25 / 2
-    elif(colour == 7): #´ëÇü°Ç¹°
+    elif(colour == 7): #ëŒ€í˜•ê±´ë¬¼
       if(proportion <= 20):
         conv_ret += proportion
       else:
         conv_ret += 20
-    elif(colour == 0): #µµ·Î
+    elif(colour == 0): #ë„ë¡œ
       env_minus_ret -= proportion * 1.25 / 10
-    elif(colour == 4): #°­
+    elif(colour == 4): #ê°•
       env_plus_ret += proportion
       syn += 1
-    elif(colour == 1): #ÁÖÅÃ
+    elif(colour == 1): #ì£¼íƒ
       hcount = count
-    elif(colour == 2): #¾ÆÆÄÆ®
+    elif(colour == 2): #ì•„íŒŒíŠ¸
       acount = count
+    elif(coulour == 5): #ë…¼ë°­
+      feild = proportion
 
-  if(syn == 2): #°­ + ³ìÁö ½Ã³ÊÁö
+  if(syn == 2): #ê°• + ë…¹ì§€ ì‹œë„ˆì§€
     env_plus_ret += 5
 
   if acount + hcount != 0:
@@ -89,10 +95,11 @@ def logic(image):
   else:
     score_house = 0
   
-  obj.insert(0, {"name" : "ÆíÀÇ¼º Á¡¼ö", "Desc" : "´ëÇü°Ç¹° ¼ö", "Score" : conv_ret})
-  obj.insert(0, {"name" : "°øÀå, µµ·Î Á¡¼ö", "Des" : "¸Å¿¬, ¼ÒÀ½ µî ¸¶ÀÌ³Ê½º ¿ä¼Ò", "Score" : env_minus_ret})
-  obj.insert(0, {"name" : "³ìÁö, °­ Á¡¼ö", "Desc" : "È¯°æ ¿ä¼Ò", "Score" : env_plus_ret})
-  obj.insert(0, {"name" : "ÁÖÅÃ/¾ÆÆÄÆ® Á¡¼ö", "Description" : "°³ÀÎ ¼±È£µµ", "Score" : score_house})
-  obj.append({"ÄèÀûµµ" : env_plus_ret+env_minus_ret+conv_ret})
+  obj['standard'].append({"name" : "íŽ¸ì˜ì„± ì ìˆ˜", "Desc" : "ëŒ€í˜•ê±´ë¬¼ ìˆ˜", "Score" : conv_ret})
+  obj['standard'].append({"name" : "ê³µìž¥, ë„ë¡œ ì ìˆ˜", "Des" : "ë§¤ì—°, ì†ŒìŒ ë“± ë§ˆì´ë„ˆìŠ¤ ìš”ì†Œ", "Score" : env_minus_ret})
+  obj['standard'].append({"name" : "ë…¹ì§€, ê°• ì ìˆ˜", "Desc" : "í™˜ê²½ ìš”ì†Œ", "Score" : env_plus_ret})
+  obj['standard'].append({"name" : "ì£¼íƒ/ì•„íŒŒíŠ¸ ì ìˆ˜", "Description" : "ê°œì¸ ì„ í˜¸ë„", "Score" : score_house})
+  obj['standard'].append({"name" : "ë…¼ë°­ ì ìˆ˜", "Desc" : "ê°œì¸ ì§€í‘œ", "Score" : field})
+  obj['score'].append({"ì¾Œì ë„" : env_plus_ret+env_minus_ret+conv_ret})
 
   return obj
