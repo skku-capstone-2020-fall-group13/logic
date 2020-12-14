@@ -68,7 +68,7 @@ def analyze(category_arr):
     elif(color == 2): #아파트
       acount = count
     elif(color == 5): #논밭
-      feild = proportion
+      field = proportion
 
   if(syn == 2): #강 + 녹지 시너지
     env_plus_ret += 5
