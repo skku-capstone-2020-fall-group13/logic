@@ -18,7 +18,7 @@ def analyze(category_arr):
   for idx, x in enumerate(colors):
     counts[idx] = 0
 
-  #100~900사이의 값은 중앙 그 외는 외곽으로 판정
+  # 10% ~ 90% 사이의 값은 중앙 그 외는 외곽으로 판정
   hmin = arr_height * 0.1
   hmax = arr_height * 0.9
   wmin = arr_width * 0.1
