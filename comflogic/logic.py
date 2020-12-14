@@ -84,7 +84,7 @@ def logic(image):
       hcount = count
     elif(colour == 2): #아파트
       acount = count
-    elif(coulour == 5): #논밭
+    elif(colour == 5): #논밭
       feild = proportion
 
   if(syn == 2): #강 + 녹지 시너지
