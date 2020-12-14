@@ -1,3 +1,3 @@
 __all__ = []
 
-from .logic import *
+from .analyze import *
