@@ -70,7 +70,7 @@ def analyze(category_arr):
     elif(color == 1): # 주택
       house_count = count
     elif(color == 2): # 아파트
-      appartment_count = count
+      apartment_count = count
     elif(color == 5): # 논밭
       development_score -= proportion
 
