@@ -3,10 +3,11 @@ import numpy as np
 def analyze(category_arr):  
   arr_height, arr_width = category_arr.shape[:2]
 
-  response = {}
-  response['standard'] = []
-  response['ratio'] = []
-  response['score'] = []
+  response = {
+    'criterion': [],
+    'classes': [],
+    'score': 0
+  }
 
   color_classes = ["도로", "주택", "아파트", "공장", "강", "논밭", "녹지", "대형건물", "미분류"]
 
