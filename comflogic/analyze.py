@@ -4,7 +4,10 @@ def analyze(category_arr):
   arr_height, arr_width = category_arr.shape[:2]
 
   response = {
-    'criterion': [],
+    'criterion': {
+      'basic': [],
+      'personalize': [], 
+    },
     'classes': [],
     'score': 0
   }
@@ -82,11 +85,11 @@ def analyze(category_arr):
   else:
     house_score = 0
   
-  response['criterion'].append({"name" : "편의성 점수", "desc" : "주변의 대형 건물(관공서 등)의 비율", "score" : convenience_score})
-  response['criterion'].append({"name" : "공장, 도로 점수", "desc" : "매연과 소음을 발생시키는 공장과 도로의 비율", "score" : factory_road_score})
-  response['criterion'].append({"name" : "녹지, 강 점수", "desc" : "공기의 질과 정서적 안정에 도움을 주는 녹지와 수변공간의 비율", "score" : green_score})
-  response['criterion'].append({"name" : "주택/아파트 지수", "desc" : "구역에 주택과 아파트 중 어느 쪽이 많은지의 비율", "score" : house_score})
-  response['criterion'].append({"name" : "개발 지수", "desc" : "시내와 교외를 판단할 수 있는 개발도 점수", "score" : development_score})
+  response['criterion']['basic'].append({"name" : "편의성 점수", "desc" : "주변의 대형 건물(관공서 등)의 비율", "score" : convenience_score})
+  response['criterion']['basic'].append({"name" : "공장, 도로 점수", "desc" : "매연과 소음을 발생시키는 공장과 도로의 비율", "score" : factory_road_score})
+  response['criterion']['basic'].append({"name" : "녹지, 강 점수", "desc" : "공기의 질과 정서적 안정에 도움을 주는 녹지와 수변공간의 비율", "score" : green_score})
+  response['criterion']['personalize'].append({"name" : "주택/아파트 지수", "desc" : "구역에 주택과 아파트 중 어느 쪽이 많은지의 비율", "score" : house_score})
+  response['criterion']['personalize'].append({"name" : "개발 지수", "desc" : "시내와 교외를 판단할 수 있는 개발도 점수", "score" : development_score})
   
   response['score'] = green_score + factory_road_score + convenience_score
 
