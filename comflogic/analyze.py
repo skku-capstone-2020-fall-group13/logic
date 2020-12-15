@@ -10,6 +10,7 @@ def analyze(category_arr):
   }
 
   color_classes = ["도로", "주택", "아파트", "공장", "강", "논밭", "녹지", "대형건물", "미분류"]
+  color_codes = ["#000000", "#ffff00", "#965000","#646464","#000096","#00ff00","#007d00","#9696fa","#ffffff"]
 
   colors, counts = np.unique(category_arr, return_counts=1)
   for idx, x in enumerate(colors):
@@ -44,11 +45,10 @@ def analyze(category_arr):
 
   for index, color in enumerate(colors):
     count = counts[index]
-    
     proportion = (100 * count) / (sum(counts)) # 외곽 픽셀 0.7 반영
     ci = int(color)
 
-    response['classes'].append({"name" : color_classes[ci] , "proportion" : proportion})
+    response['classes'].append({"name" : color_classes[ci] , "color": color_codes[ci], "proportion" : proportion})
     
     if(color == 6): # 녹지
       green_score += proportion
